@@ -21,14 +21,14 @@ _to = 'whatsapp:+918297388291'
 
 
 
-@app.route("/getall", methods=['GET'])
+@app.route("/api/getall", methods=['GET'])
 def wa_getall():
    all_msgs =  Rececol.find({},{"_id":0}).sort("_id",-1).limit(2)
    list_cur = list(all_msgs)
    json_data = json.dumps(list_cur)
    return json_data
 
-@app.route("/reply", methods=['POST'])
+@app.route("/api/reply", methods=['POST'])
 def wa_reply():
     req_data = request.form.to_dict()
     clnt = Client(account_sid, auth_token) 
@@ -44,17 +44,12 @@ def wa_reply():
     #Replcol.insert_one(req_data)
     return "ok"
 
-
-@app.route("/receipt", methods=['POST'])
+@app.route("/api/receipt", methods=['POST'])
 def wa_receipt():
 
    wa_msg = request.form.to_dict()
-    
-   #print(wa_msg)
-    
    Rececol.insert_one(wa_msg)
    #checking if media exist needs to handle accordingly
-
    hasmedia = wa_msg['NumMedia']
    if hasmedia == '1':
 
@@ -70,7 +65,6 @@ def wa_receipt():
             filename = msg_url.split('/')[-1]
             open(filename+"."+ext, 'wb').write(json_path.content)  # Storing the file
       except:
-            print("no url-->>")   
             print("Media Not found")
 
    #lets extract the message and figure out how to handle it
@@ -78,12 +72,14 @@ def wa_receipt():
    resp = MessagingResponse()
    reply=resp.message()
    
-   #call handler to handle the message
-
-   # Text response
-   
-   if msg == "hi":
-      reply.body("hello! I am just a bot")
+   list_greet = ['hi','hello','hey']
+   list_image = ['image','pic','picture']
+   list_audio = ['audio','song']
+   list_video = ['video','movie']
+   list_file = ['invoice','inv','invoices']
+   if list_greet.intersection(msg):
+      strng = "Hi " + wa_msg['ProfileName'] + " : I am just a bot " 
+      reply.body(strng)
 
    # Image response
    elif msg == "image":
