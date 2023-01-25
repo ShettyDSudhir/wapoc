@@ -1,10 +1,16 @@
 from flask import Flask, request
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
+import json
+import pymongo
 
 
 
 app = Flask(__name__)
+
+client = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = client["wapoc"]
+mycol = mydb["WaMsg"]  
 
 
 
@@ -14,6 +20,8 @@ def wa_sms_reply():
     wa_msg = request.form.to_dict()
     
     #print(wa_msg)
+    
+    mycol.insert_one(wa_msg)
     #checking if media exist needs to handle accordingly
 
     hasmedia = wa_msg['NumMedia']
