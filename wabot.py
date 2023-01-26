@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import Flask, request
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
@@ -13,9 +14,9 @@ Rececol = mydb["WaMsg"]
 Replcol = mydb["WaReplys"] 
 Sentcol = mydb["WaSent"]
 account_sid = 'AC671789b6e19da8927007570572dfafef' 
-auth_token = '2efe68e44e889eeecfb0c8760c3778d0' 
+auth_token = 'e8280996cc98539d2705bf68e969087a' 
 _from = 'whatsapp:+14155238886'
-_body = 'Hello! This is an editable text message. You can edit it and send it to your friends.'
+_body = 'Unable to send message from System'
 _to = 'whatsapp:+918297388291'
 
 
@@ -30,29 +31,27 @@ def wa_getall():
 
 @app.route("/api/reply", methods=['POST'])
 def wa_reply():
-    req_data = request.form.to_dict()
-    clnt = Client(account_sid, auth_token) 
-    message = clnt.messages.create(from_=_from,body=_body,to=_to)
-    dct = message.__dict__
-    print(type(dct['_properties']))
-   #  for key, value in dct.items():
-   #    print("------------------")
-   #    print(key)
-   #    print("------------------")
-   #    print(value)
-    #Sentcol.insert_one(dct)
-    #Replcol.insert_one(req_data)
-    return "ok"
+   req_data = request.form.to_dict()
+   #_body = req_data['ReplyMsg']
+   #_to = req_data['SentTo']
+   clnt = Client(account_sid, auth_token) 
+   message = clnt.messages.create(from_=_from,body=_body,to=_to)
+   #dct = message.__dict__
+   #Replcol.insert_one(dct)
+   
+   #print(type(dct['_properties']))
+   return "ok"
 
 @app.route("/api/receipt", methods=['POST'])
 def wa_receipt():
 
    wa_msg = request.form.to_dict()
+   wa_msg['rec_date'] = datetime.now()
    Rececol.insert_one(wa_msg)
    #checking if media exist needs to handle accordingly
    hasmedia = wa_msg['NumMedia']
-   if hasmedia == '1':
 
+   if hasmedia == '1':
       try: # Storing the file that user send to the Twilio whatsapp number in our computer
          msg_url=wa_msg['MediaUrl0']  # Getting the URL of the file
          print("msg_url-->",msg_url)
@@ -76,29 +75,35 @@ def wa_receipt():
    list_image = ['image','pic','picture']
    list_audio = ['audio','song']
    list_video = ['video','movie']
-   list_file = ['invoice','inv','invoices']
-   if list_greet.intersection(msg):
+   list_file = ['invoice','inv','invoices','challan','challans','bill','bills']
+   list_info = ['infomation','information','info','help']
+   
+   if (msg in list_greet ):
       strng = "Hi " + wa_msg['ProfileName'] + " : I am just a bot " 
       reply.body(strng)
 
    # Image response
-   elif msg == "image":
+   elif (msg in list_image):
       #reply.media('gateway-india-mumbai-gateway.jpg',caption="Gateway of India")
       reply.body("Image sent")
+   
    # Audio response
-   elif msg == "audio":
+   elif (msg in list_audio):
       reply.media('http://www.largesound.com/ashborytour/sound/brobob.mp3')
         
    # Video response
-   elif msg == "video":
-      #reply.media('https://www.appsloveworld.com/wp-content/uploads/2018/10/640.mp4')
+   elif (msg in list_video):
+      reply.media('https://www.appsloveworld.com/wp-content/uploads/2018/10/640.mp4')
       reply.body("Video sent")
     
    # Document response
-   elif msg == "file":
+   elif (msg in list_file):
       reply.media('https://lienzo.s3.amazonaws.com/images/8d543af756864231e8bfa6532a230bd5-in-invoice-template-PDF-2.pdf')
       reply.body("Your Invoice attached")
     
+   elif list_info.intersection(msg):
+      print("hi")
+
    else:
       strng = "Hi " + wa_msg['ProfileName'] + " you said '--" + wa_msg['Body'] + "--'"
       reply.body(strng)
