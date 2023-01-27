@@ -18,8 +18,13 @@ _body = 'Unable to send message from System'
 _to = 'whatsapp:+919821335868'
 
 
-@app.route("/api/getall", methods=['GET'])
-def wa_getall():
+@app.route("/api/getallsent", methods=['GET'])
+def wa_getallsent():
+   json_data = asyncio.run(da.Getallchats())
+   return json_data
+
+@app.route("/api/getallrece", methods=['GET'])
+def wa_getallrec():
    json_data = asyncio.run(da.Getallchats())
    return json_data
 
@@ -30,7 +35,6 @@ def wa_gethistory():
    json_data = asyncio.run(da.Getchat(mobileno))
 
    return json_data
-
 
 @app.route("/api/reply", methods=['POST'])
 def wa_reply():

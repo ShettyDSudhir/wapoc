@@ -38,16 +38,29 @@ async def insertReceived(data):
 
 
 async def Getchat(mobileno):
-    all_msgs =  Histcol.find({"MobileNo" : mobileno},{"_id":0}).sort("_id",-1).limit(2)
+    all_msgs =  Histcol.find({"MobileNo" : mobileno},{"InsertedOn":0}).sort("_id",-1).limit(20)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
 
 async def Getallchats():
-    all_msgs =  Histcol.find({},{"_id":0}).sort("_id",-1).limit(2)
+    all_msgs =  Histcol.find({},{"_id":0}).sort("InsertedOn",-1).limit(2)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
+
+async def GetallSent():
+    all_msgs =  Replcol.find({},{"_id":0}).sort("sent_date",-1).limit(20)
+    list_cur = list(all_msgs)
+    json_data = json.dumps(list_cur, default=str)
+    return json_data
+
+async def GetallReceived():
+    all_msgs =  Rececol.find({},{"_id":0}).sort("rec_date",-1).limit(20)
+    list_cur = list(all_msgs)
+    json_data = json.dumps(list_cur, default=str)
+    return json_data
+
 
 def insertHistory(data):
     data['InsertedOn'] = datetime.now()
