@@ -1,13 +1,18 @@
-from twilio.rest import Client 
- 
-account_sid = 'AC671789b6e19da8927007570572dfafef' 
-auth_token = '2efe68e44e889eeecfb0c8760c3778d0' 
-client = Client(account_sid, auth_token) 
- 
-message = client.messages.create( 
-                              from_='whatsapp:+14155238886',  
-                              body='Hi Sudhir This is an demo msg. You asked for support help.',      
-                              to='whatsapp:+918297388291' 
-                          ) 
- 
-print(message)
+import pymongo
+from datetime import datetime
+
+myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+mydb = myclient["wapoc"]
+History = mydb["ChatHistory"]
+
+Histdict = {}
+
+
+Histdict['MobileNo'] = "9821335868"
+Histdict['Name'] = "Test - 04"
+Histdict['Msg'] = "Hello"
+Histdict['MsgType'] = "text"
+Histdict['InsertedOn'] = datetime.now()
+Histdict['SentRecd']  = "0"
+
+History.insert_one(Histdict)

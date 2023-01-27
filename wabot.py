@@ -1,53 +1,54 @@
 from datetime import datetime
+import asyncio
 from flask import Flask, request
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
 import json
-import pymongo
+from json import JSONEncoder
 from twilio.rest import Client 
+import dataaccess as da
+
 
 app = Flask(__name__)
 
-client = pymongo.MongoClient("mongodb://localhost:27017/")
-mydb = client["wapoc"]
-Rececol = mydb["WaMsg"] 
-Replcol = mydb["WaReplys"] 
-Sentcol = mydb["WaSent"]
 account_sid = 'AC671789b6e19da8927007570572dfafef' 
-auth_token = 'e8280996cc98539d2705bf68e969087a' 
+auth_token = '8fff8d7723c370c49ac11912f53a550b'
 _from = 'whatsapp:+14155238886'
 _body = 'Unable to send message from System'
-_to = 'whatsapp:+918297388291'
-
-
+_to = 'whatsapp:+919821335868'
 
 
 @app.route("/api/getall", methods=['GET'])
 def wa_getall():
-   all_msgs =  Rececol.find({},{"_id":0}).sort("_id",-1).limit(2)
-   list_cur = list(all_msgs)
-   json_data = json.dumps(list_cur)
+   json_data = asyncio.run(da.Getallchats())
    return json_data
+
+@app.route("/api/gethistory", methods=['POST'])
+def wa_gethistory():
+   req_data = request.form.to_dict()
+   mobileno = req_data['MobileNo']
+   json_data = asyncio.run(da.Getchat(mobileno))
+
+   return json_data
+
 
 @app.route("/api/reply", methods=['POST'])
 def wa_reply():
    req_data = request.form.to_dict()
-   #_body = req_data['ReplyMsg']
-   #_to = req_data['SentTo']
+   _body = req_data['ReplyMsg']
+   _to = req_data['SentTo']
+   _from = req_data['SentFrom']
    clnt = Client(account_sid, auth_token) 
    message = clnt.messages.create(from_=_from,body=_body,to=_to)
-   #dct = message.__dict__
-   #Replcol.insert_one(dct)
-   
-   #print(type(dct['_properties']))
+   recd = dict(message._properties)
+   asyncio.run(da.insertReply(recd))
    return "ok"
 
 @app.route("/api/receipt", methods=['POST'])
 def wa_receipt():
 
    wa_msg = request.form.to_dict()
-   wa_msg['rec_date'] = datetime.now()
-   Rececol.insert_one(wa_msg)
+   asyncio.run(da.insertReceived(wa_msg))
    #checking if media exist needs to handle accordingly
    hasmedia = wa_msg['NumMedia']
 
@@ -101,15 +102,18 @@ def wa_receipt():
       reply.media('https://lienzo.s3.amazonaws.com/images/8d543af756864231e8bfa6532a230bd5-in-invoice-template-PDF-2.pdf')
       reply.body("Your Invoice attached")
     
-   elif list_info.intersection(msg):
+   elif (msg in list_info):
       print("hi")
 
    else:
-      strng = "Hi " + wa_msg['ProfileName'] + " you said '--" + wa_msg['Body'] + "--'"
-      reply.body(strng)
-      print(reply.media)
+      # strng = "Hi " + wa_msg['ProfileName'] + " you said '--" + wa_msg['Body'] + "--'"
+      # reply.body(strng)
+      # print(reply.media)
+      print('msg dumped')
 
    return str(resp)
 
 if __name__ == "__main__":
     app.run(debug=True)
+
+

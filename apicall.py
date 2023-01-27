@@ -4,7 +4,7 @@ from flask import Flask, request
 from twilio.rest import Client 
  
 account_sid = 'AC671789b6e19da8927007570572dfafef' 
-auth_token = 'e8280996cc98539d2705bf68e969087a' 
+auth_token = '8fff8d7723c370c49ac11912f53a550b' 
 client = Client(account_sid, auth_token) 
  
 message = client.messages.create( 
