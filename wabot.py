@@ -20,11 +20,16 @@ _to = 'whatsapp:+919821335868'
 
 @app.route("/api/getallsent", methods=['GET'])
 def wa_getallsent():
-   json_data = asyncio.run(da.Getallchats())
+   json_data = asyncio.run(da.GetallSent())
    return json_data
 
 @app.route("/api/getallrece", methods=['GET'])
 def wa_getallrec():
+   json_data = asyncio.run(da.GetallReceived())
+   return json_data
+
+@app.route("/api/getallchat", methods=['GET'])
+def wa_getallchat():
    json_data = asyncio.run(da.Getallchats())
    return json_data
 
