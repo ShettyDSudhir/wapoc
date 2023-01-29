@@ -9,7 +9,7 @@ Rececol = mydb["WaReceived"]
 Replcol = mydb["WaReplys"] 
 Histcol = mydb["ChatHistory"]
 
-async def insertReply(data):
+async def insertreply(data):
     
     data['sent_date'] = datetime.now()
     Replcol.insert_one(data)
@@ -23,7 +23,7 @@ async def insertReply(data):
     Histcol.insert_one(chatdata)
 
    
-async def insertReceived(data):
+async def insertreceived(data):
     
     data['rec_date'] = datetime.now()
     Rececol.insert_one(data)
@@ -37,31 +37,31 @@ async def insertReceived(data):
     Histcol.insert_one(chatdata)
 
 
-async def Getchat(mobileno):
+async def getchat(mobileno):
     all_msgs =  Histcol.find({"MobileNo" : mobileno},{"_id":0}).sort("InsertedOn",-1).limit(20)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
 
-async def Getallchats():
+async def getcllchats():
     all_msgs =  Histcol.find({},{"_id":0}).sort("InsertedOn",-1).limit(20)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
 
-async def GetallSent():
+async def getallsent():
     all_msgs =  Replcol.find({},{"_id":0}).sort("sent_date",-1).limit(20)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
 
-async def GetallReceived():
+async def getallreceived():
     all_msgs =  Rececol.find({},{"_id":0}).sort("rec_date",-1).limit(20)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
 
 
-def insertHistory(data):
+def inserthistory(data):
     data['InsertedOn'] = datetime.now()
     Histcol.insert_one(data)

@@ -3,8 +3,6 @@ import asyncio
 from flask import Flask, request
 import requests
 from twilio.twiml.messaging_response import MessagingResponse
-import json
-from json import JSONEncoder
 from twilio.rest import Client 
 import dataaccess as da
 
@@ -20,24 +18,24 @@ _to = 'whatsapp:+919821335868'
 
 @app.route("/api/getallsent", methods=['GET'])
 def wa_getallsent():
-   json_data = asyncio.run(da.GetallSent())
+   json_data = asyncio.run(da.getallsent())
    return json_data
 
-@app.route("/api/getallrece", methods=['GET'])
+@app.route("/api/recd", methods=['GET'])
 def wa_getallrec():
-   json_data = asyncio.run(da.GetallReceived())
+   json_data = asyncio.run(da.getallreceived())
    return json_data
 
 @app.route("/api/getallchat", methods=['GET'])
 def wa_getallchat():
-   json_data = asyncio.run(da.Getallchats())
+   json_data = asyncio.run(da.getallchats())
    return json_data
 
 @app.route("/api/gethistory", methods=['POST'])
 def wa_gethistory():
    req_data = request.form.to_dict()
    mobileno = req_data['MobileNo']
-   json_data = asyncio.run(da.Getchat(mobileno))
+   json_data = asyncio.run(da.getchat(mobileno))
 
    return json_data
 
@@ -46,18 +44,18 @@ def wa_reply():
    req_data = request.form.to_dict()
    _body = req_data['ReplyMsg']
    _to = req_data['SentTo']
-   _from = req_data['SentFrom']
+   #_from = req_data['SentFrom']
    clnt = Client(account_sid, auth_token) 
    message = clnt.messages.create(from_=_from,body=_body,to=_to)
    recd = dict(message._properties)
-   asyncio.run(da.insertReply(recd))
+   asyncio.run(da.insertreply(recd))
    return "ok"
 
 @app.route("/api/receipt", methods=['POST'])
 def wa_receipt():
 
    wa_msg = request.form.to_dict()
-   asyncio.run(da.insertReceived(wa_msg))
+   asyncio.run(da.insertreceived(wa_msg))
    #checking if media exist needs to handle accordingly
    hasmedia = wa_msg['NumMedia']
 
@@ -115,9 +113,6 @@ def wa_receipt():
       print("hi")
 
    else:
-      # strng = "Hi " + wa_msg['ProfileName'] + " you said '--" + wa_msg['Body'] + "--'"
-      # reply.body(strng)
-      # print(reply.media)
       print('msg dumped')
 
    return str(resp)
