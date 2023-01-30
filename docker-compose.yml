@@ -1,0 +1,19 @@
+version: '3.7'
+
+services:
+  soi_app:
+    container_name: wabot
+    restart: always
+    build: 
+      context: ./wabot
+      network: host
+    command: gunicorn -w 1 -b 0.0.0.0:5000 wsgi:app
+    networks:
+      - frontend-network
+    environment:
+      - account_sid = '' 
+      - auth_token = ''
+
+networks:
+  frontend-network:
+    external: true
