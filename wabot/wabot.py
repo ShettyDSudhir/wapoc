@@ -15,6 +15,10 @@ _from = 'whatsapp:+14155238886'
 _body = 'Unable to send message from System'
 _to = 'whatsapp:+919821335868'
 
+@app.route("/api/dashboard1", methods=['GET'])
+def wa_dashboard1():
+   json_data = asyncio.run(da.getdashboard1())
+   return json_data
 
 @app.route("/api/sent", methods=['GET'])
 def wa_getallsent():
@@ -31,20 +35,23 @@ def wa_getallchat():
    json_data = asyncio.run(da.getallchats())
    return json_data
 
-@app.route("/api/history", methods=['POST'])
+@app.route("/api/history", methods=['GET'])
 def wa_gethistory():
-   req_data = request.form.to_dict()
-   mobileno = req_data['MobileNo']
+   req_data = request.args.to_dict()
+   #print(req_data)
+   mobileno = req_data["MobileNo"]
+   #print(mobileno)
    json_data = asyncio.run(da.getchat(mobileno))
 
    return json_data
 
-@app.route("/api/reply", methods=['POST'])
+@app.route("/api/reply", methods=['GET'])
 def wa_reply():
-   req_data = request.form.to_dict()
+   req_data = request.args.to_dict()
    _body = req_data['ReplyMsg']
-   _to = req_data['SentTo']
-   #_from = req_data['SentFrom']
+   _to = "whatsapp:+91" + req_data['SentTo']
+   print(_body)
+   print(_to)
    clnt = Client(account_sid, auth_token) 
    message = clnt.messages.create(from_=_from,body=_body,to=_to)
    recd = dict(message._properties)

@@ -8,6 +8,7 @@ mydb = client["wapoc"]
 Rececol = mydb["WaReceived"] 
 Replcol = mydb["WaReplys"] 
 Histcol = mydb["ChatHistory"]
+custcol = mydb["customers"]
 
 async def insertreply(data):
     
@@ -38,7 +39,8 @@ async def insertreceived(data):
 
 
 async def getchat(mobileno):
-    all_msgs =  Histcol.find({"MobileNo" : mobileno},{"_id":0}).sort("InsertedOn",-1).limit(20)
+    _mobile = "whatsapp:+91" + mobileno
+    all_msgs =  Histcol.find({"MobileNo" : _mobile},{"_id":0}).sort("InsertedOn",1).limit(50)
     list_cur = list(all_msgs)
     json_data = json.dumps(list_cur, default=str)
     return json_data
@@ -61,6 +63,11 @@ async def getallreceived():
     json_data = json.dumps(list_cur, default=str)
     return json_data
 
+async def getdashboard1():
+    all_msgs =  custcol.find({},{"_id":0}).sort("customers",-1).limit(20)
+    list_cur = list(all_msgs)
+    json_data = json.dumps(list_cur, default=str)
+    return json_data
 
 def inserthistory(data):
     data['InsertedOn'] = datetime.now()
