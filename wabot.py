@@ -5,18 +5,19 @@ import requests
 from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client 
 import dataaccess as da
-
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
-account_sid = 'AC671789b6e19da8927007570572dfafef' 
-auth_token = '8fff8d7723c370c49ac11912f53a550b'
+account_sid = '' 
+auth_token = ''
 _from = 'whatsapp:+14155238886'
 _body = 'Unable to send message from System'
 _to = 'whatsapp:+919821335868'
 
 
-@app.route("/api/getallsent", methods=['GET'])
+@app.route("/api/sent", methods=['GET'])
 def wa_getallsent():
    json_data = asyncio.run(da.getallsent())
    return json_data
@@ -26,12 +27,12 @@ def wa_getallrec():
    json_data = asyncio.run(da.getallreceived())
    return json_data
 
-@app.route("/api/getallchat", methods=['GET'])
+@app.route("/api/chat", methods=['GET'])
 def wa_getallchat():
    json_data = asyncio.run(da.getallchats())
    return json_data
 
-@app.route("/api/gethistory", methods=['POST'])
+@app.route("/api/history", methods=['POST'])
 def wa_gethistory():
    req_data = request.form.to_dict()
    mobileno = req_data['MobileNo']
