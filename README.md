@@ -1,2 +1,2 @@
 # wapoc
-{'SmsMessageSid': 'SM687c5e12c7391dbc994050405bda21e3', 'NumMedia': '0', 'ProfileName': 'Sudhir Shetty', 'SmsSid': 'SM687c5e12c7391dbc994050405bda21e3', 'WaId': '919821335868', 'SmsStatus': 'received', 'Body': 'Need full msg data', 'To': 'whatsapp:+14155238886', 'NumSegments': '1', 'ReferralNumMedia': '0', 'MessageSid': 'SM687c5e12c7391dbc994050405bda21e3', 'AccountSid': 'AC671789b6e19da8927007570572dfafef', 'From': 'whatsapp:+919821335868', 'ApiVersion': '2010-04-01'}
+https://www.twilio.com/whatsapp/pricing

@@ -11,9 +11,8 @@ services:
     networks:
       - frontend-network
     environment:
-      - account_sid = '' 
-      - auth_token = ''
+      - account_sid = 'AC671789b6e19da8927007570572dfafef' 
+      - auth_token = 'fefd54ebcbfaa246a738d00848c5ad17'
 
 networks:
   frontend-network:
-    external: true
