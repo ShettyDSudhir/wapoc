@@ -5,6 +5,7 @@ from twilio.twiml.messaging_response import MessagingResponse
 from twilio.rest import Client 
 import dataaccess as da
 from flask_cors import CORS
+import re
 
 app = Flask(__name__)
 CORS(app)
@@ -88,36 +89,45 @@ def wa_receipt():
    
    list_greet = ['hi','hello','hey']
    list_image = ['image','pic','picture']
+   list_order = ['order','orders']
    list_audio = ['audio','song']
    list_video = ['video','movie']
    list_file = ['invoice','inv','invoices','challan','challans','bill','bills']
-   list_info = ['infomation','information','info','help']
+   list_info = ['infomation','informations','info','help']
    
-   if (msg in list_greet ):
+
+   if any(word.lower() in msg.lower() for word in list_greet):
       strng = "Hi " + wa_msg['ProfileName'] + " : I am just a bot " 
       reply.body(strng)
 
    # Image response
-   elif (msg in list_image):
+   elif any(word.lower() in msg.lower() for word in list_image):
       #reply.media('gateway-india-mumbai-gateway.jpg',caption="Gateway of India")
       reply.body("Image sent")
+
+   # Order response
+   elif any(word.lower() in msg.lower() for word in list_order):
+      num = re.findall(r'\d+', msg)
+      for invs in num:
+         retval = da.findorder(invs)
+      reply.body(retval)
    
    # Audio response
-   elif (msg in list_audio):
+   elif any(word.lower() in msg.lower() for word in list_audio):
       reply.media('http://www.largesound.com/ashborytour/sound/brobob.mp3')
         
    # Video response
-   elif (msg in list_video):
+   elif any(word.lower() in msg.lower() for word in list_video):
       reply.media('https://www.appsloveworld.com/wp-content/uploads/2018/10/640.mp4')
       reply.body("Video sent")
     
    # Document response
-   elif (msg in list_file):
+   elif any(word.lower() in msg.lower() for word in list_file):
       reply.media('https://lienzo.s3.amazonaws.com/images/8d543af756864231e8bfa6532a230bd5-in-invoice-template-PDF-2.pdf')
-      reply.body("Your Invoice attached")
+      reply.body("Your document attached")
     
-   elif (msg in list_info):
-      print("hi")
+   elif any(word.lower() in msg.lower() for word in list_info):
+      print("Implement help text here")
 
    else:
       print('msg dumped')

@@ -9,6 +9,7 @@ Rececol = mydb["WaReceived"]
 Replcol = mydb["WaReplys"] 
 Histcol = mydb["ChatHistory"]
 custcol = mydb["customers"]
+ordercol = mydb["orders"]
 
 async def insertreply(data):
     
@@ -22,21 +23,24 @@ async def insertreply(data):
     chatdata['InsertedOn'] = data['sent_date']
     chatdata['SentRecd']  = "1"
     Histcol.insert_one(chatdata)
-
    
 async def insertreceived(data):
-    
+    hasmedia = data['NumMedia']
+    chatdata = {}
     data['rec_date'] = datetime.now()
     Rececol.insert_one(data)
-    chatdata = {}
     chatdata['MobileNo'] = data['From']
     chatdata['Name'] = data['ProfileName']
     chatdata['Msg'] = data['Body']
     chatdata['MsgType'] = data["NumMedia"]
     chatdata['InsertedOn'] = data['rec_date']
     chatdata['SentRecd']  = "0"
-    Histcol.insert_one(chatdata)
+    if hasmedia == '1':
+        chatdata["MediaUrl"] = data["MediaUrl0"]
+    else:
+        chatdata["MediaUrl"] = "N.A."
 
+    Histcol.insert_one(chatdata)
 
 async def getchat(mobileno):
     _mobile = "whatsapp:+91" + mobileno
@@ -72,3 +76,14 @@ async def getdashboard1():
 def inserthistory(data):
     data['InsertedOn'] = datetime.now()
     Histcol.insert_one(data)
+
+def findorder(orderid):
+    all_msgs =  Histcol.find({"orderno" : orderid},{"_id":0}).sort("orderdt",-1).limit(1)
+    list_cur = list(all_msgs)
+    if(len(list_cur) == 0):
+        retstr = 'No order found for order id : ' + orderid
+    else:
+        retstr = 'order-No :' + list_cur['orderno'] + '\n' + 'patient name : ' + list_cur['patient'] + '\n' + 'Status :' + list_cur['status'] + '\n' + "ETA : " + list_cur['ETA']
+
+    return retstr
+

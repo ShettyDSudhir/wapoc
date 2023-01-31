@@ -1,0 +1,11 @@
+recId,mobileno,patient,orderno,orderdt,ETA,status
+1,9821335868,Sujit,7762,30/01/23,05/02/23,Despatched
+2,9821335868,Sanjay,7763,31/01/23,06/02/23,Process III
+3,8297388291,Ankita,7764,31/01/23,07/02/23,Despatched
+4,9821335868,Mitesh,7765,31/01/23,08/02/23,Process III
+5,8297388291,Sudhir,7766,31/01/23,09/02/23,Process V
+6,9821335868,Patient 1,7767,31/01/23,10/02/23,data entered
+7,8297388291,Bhavin,7768,31/01/23,11/02/23,awaiting approval
+8,8297388291,Premal,7769,31/01/23,12/02/23,awaiting query
+9,9821335868,Roshan,7770,31/01/23,13/02/23,unable to process image
+10,8297388291,Ketan,7771,31/01/23,14/02/23,model/image not received

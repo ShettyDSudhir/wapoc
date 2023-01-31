@@ -11,8 +11,8 @@ services:
     networks:
       - frontend-network
     environment:
-      - account_sid = '' 
-      - auth_token = ''
+      - account_sid='ttt' 
+      - auth_token='ttt'
 
 networks:
   frontend-network:
