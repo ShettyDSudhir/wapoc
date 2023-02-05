@@ -78,8 +78,8 @@ def inserthistory(data):
     Histcol.insert_one(data)
 
 def findorder(orderid):
-    all_msgs =  Histcol.find({"orderno" : orderid},{"_id":0}).sort("orderdt",-1).limit(1)
-    list_cur = list(all_msgs)
+    list_cur =  ordercol.find_one({"orderno" : orderid})
+
     if(len(list_cur) == 0):
         retstr = 'No order found for order id : ' + orderid
     else:

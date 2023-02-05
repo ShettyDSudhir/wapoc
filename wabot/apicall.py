@@ -18,7 +18,7 @@ print(message.sid)
 import openai
 
 # Replace YOUR_API_KEY with your OpenAI API key
-openai.api_key = "YOUR_API_KEY"
+openai.api_key = "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"
 
 # Set the model and prompt
 model_engine = "text-davinci-003"

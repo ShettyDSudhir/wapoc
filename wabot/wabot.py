@@ -6,12 +6,13 @@ from twilio.rest import Client
 import dataaccess as da
 from flask_cors import CORS
 import re
+import gtpchat
 
 app = Flask(__name__)
 CORS(app)
 
-account_sid = '' 
-auth_token = ''
+account_sid = 'AC671789b6e19da8927007570572dfafef' 
+auth_token = 'fefd54ebcbfaa246a738d00848c5ad17'
 _from = 'whatsapp:+14155238886'
 _body = 'Unable to send message from System'
 _to = 'whatsapp:+919821335868'
@@ -57,7 +58,7 @@ def wa_reply():
    message = clnt.messages.create(from_=_from,body=_body,to=_to)
    recd = dict(message._properties)
    asyncio.run(da.insertreply(recd))
-   return "ok"
+   return "Message Sent"
 
 @app.route("/api/receipt", methods=['POST'])
 def wa_receipt():
@@ -90,7 +91,7 @@ def wa_receipt():
    list_greet = ['hi','hello','hey']
    list_image = ['image','pic','picture']
    list_order = ['order','orders']
-   list_audio = ['audio','song']
+   list_audio = ['audio','song','recording']
    list_video = ['video','movie']
    list_file = ['invoice','inv','invoices','challan','challans','bill','bills']
    list_info = ['infomation','informations','info','help']
@@ -110,7 +111,7 @@ def wa_receipt():
       num = re.findall(r'\d+', msg)
       for invs in num:
          retval = da.findorder(invs)
-      reply.body(retval)
+         reply.body(retval)
    
    # Audio response
    elif any(word.lower() in msg.lower() for word in list_audio):
@@ -128,6 +129,10 @@ def wa_receipt():
     
    elif any(word.lower() in msg.lower() for word in list_info):
       print("Implement help text here")
+
+   elif msg[0] == '?':
+      reply.body(gtpchat.getanswer(msg[1:]))
+
 
    else:
       print('msg dumped')
