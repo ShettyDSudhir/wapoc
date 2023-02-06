@@ -11,8 +11,8 @@ import gtpchat
 app = Flask(__name__)
 CORS(app)
 
-account_sid = 'AC671789b6e19da8927007570572dfafef' 
-auth_token = 'fefd54ebcbfaa246a738d00848c5ad17'
+account_sid = '' 
+auth_token = ''
 _from = 'whatsapp:+14155238886'
 _body = 'Unable to send message from System'
 _to = 'whatsapp:+919821335868'
